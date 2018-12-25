@@ -1,0 +1,26 @@
+py:222: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+./pixve/lib/python3.5/importlib/_bootstrap.py:222: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+Traceback (most recent call last):
+  File "pix2pix/main.py", line 47, in <module>
+    generator_nn = UNETGenerator(input_img_dim=input_img_dim, num_output_channels=output_channels)
+  File "./pix2pix/networks/generator.py", line 154, in UNETGenerator
+    de_2 = merge([de_2, en_6], mode=merge_mode, concat_axis=1)
+  File "./pixve/lib/python3.5/site-packages/keras/engine/topology.py", line 1680, in merge
+    name=name)
+  File "./pixve/lib/python3.5/site-packages/keras/engine/topology.py", line 1299, in __init__
+    node_indices, tensor_indices)
+  File "./pixve/lib/python3.5/site-packages/keras/engine/topology.py", line 1371, in _arguments_validation
+    'Layer shapes: %s' % (input_shapes))
+ValueError: "concat" mode can only merge layers with matching output shapes except for the concat axis. Layer shapes: [(None, 6, 4, 1024), (None, 1, 4, 512)]
+
+
+
+
+If you have the above problem, the solution is as follows
+
+By default, keras expects images to be formated with channel last, and uses this in Convolution layers. Fixed it by adding the following to main.py:
+
+import keras.backend as K
+K.set_image_dim_ordering('th')
